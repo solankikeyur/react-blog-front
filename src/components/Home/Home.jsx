@@ -3,7 +3,7 @@ import BlogList from "../Blog/BlogList";
 
 const Home = () => {
   return (
-    <Front>
+    <Front headerText={"Homepage"}>
       <BlogList></BlogList>
     </Front>
   )

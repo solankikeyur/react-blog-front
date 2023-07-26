@@ -17,7 +17,7 @@ const Login = () => {
     grant_type: "password",
     scope: "users",
     client_id: "2",
-    client_secret: "gnSGbgg9c9FfT8ayozuMr6PeIJFRhxCUaYeZoMRu",
+    client_secret: "BblSLXXESBtyFTveVPSpaJXlcL46VGGTG8saaDst",
   });
   const [errors, setErrors] = useState({
     email: "",
@@ -50,7 +50,7 @@ const Login = () => {
 
             })
             .catch((error) => {
-              console.log(error);
+              failure("Invalid login details");
               setIsSubmitting(false);
             });
         }

@@ -1,24 +1,26 @@
-import headerImg from "../../assets/img/home-bg.jpg";
+import defaultHeaderImg from "../../assets/img/home-bg.jpg";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import userStore from "../../stores/UserStore";
 import Request from "../../Request";
 import { success } from "../Toast/Methods";
 
-const Navbar = ({ headerText, subHeading }) => {
+
+const Navbar = ({ headerText, subHeading, headerImg }) => {
   const { authToken, setAuthToken } = userStore();
   const navigate = useNavigate();
   const handleLogout = () => {
-    Request.post("api/logout").then(() => {
-      localStorage.removeItem("access_token");
-      setAuthToken("");
-      success("Logout successfull");
-      return navigate("/");
-    }).catch((error) => {
-      console.log(error);
-    })
-    // setAuthToken('');
-  }
+    Request.post("api/logout")
+      .then(() => {
+        localStorage.removeItem("access_token");
+        setAuthToken("");
+        success("Logout successfull");
+        return navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light" id="mainNav">
@@ -101,10 +103,10 @@ const Navbar = ({ headerText, subHeading }) => {
           </div>
         </div>
       </nav>
-      {/* Page Header*/}
+
       <header
         className="masthead"
-        style={{ backgroundImage: `url(${headerImg})` }}
+        style={ !headerImg ? { backgroundImage: `url(${defaultHeaderImg})`} : {backgroundImage : `url(${headerImg})`}}
       >
         <div className="container position-relative px-4 px-lg-5">
           <div className="row gx-4 gx-lg-5 justify-content-center">
@@ -119,6 +121,7 @@ const Navbar = ({ headerText, subHeading }) => {
           </div>
         </div>
       </header>
+
     </>
   );
 };
@@ -126,6 +129,7 @@ const Navbar = ({ headerText, subHeading }) => {
 Navbar.propTypes = {
   headerText: PropTypes.string,
   subHeading: PropTypes.string,
+  headerImg: PropTypes.string,
 };
 
 export default Navbar;
