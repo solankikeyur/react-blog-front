@@ -10,6 +10,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 const BlogAdd = () => {
   const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const {blogId} = useParams();
   const navigate = useNavigate();
   const modules = {
@@ -61,20 +62,21 @@ const BlogAdd = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     data.content = value;
-    Request.post("api/blog/add", data, {
+    const URL = blogId ? `update/${blogId}` : "add";
+    Request.post(`api/blog/${URL}`, data, {
       headers: {
         "Content-Type": "multipart/form-data"
       }
     }).then(({data:response}) => {
-
       if(response.code === 200) {
         success(response.data.message);
         navigate("/my-account");
       } else {
         failure(response.data.message);
       }
-
+      setIsLoading(false);
     }).catch(({ response }) => {
       if (response && response.status === 422) {
         setErrors(response.data.errors);
@@ -82,11 +84,13 @@ const BlogAdd = () => {
       } else {
         failure("Something went wrong. Please try again.");
       }
+      setIsLoading(false);
     });
   }
 
   useEffect(() => {
     if(blogId) {
+      setIsLoading(true);
       Request.get(`api/blog/get/${blogId}`).then(({data: response}) => {
         if(response.code === 200) {
           const blog = response.data.blog;
@@ -97,11 +101,12 @@ const BlogAdd = () => {
           setImagePrev(blog.image);
           setValue(blog.content);
         }
+        setIsLoading(false);
       }).catch((error) => {
         console.log(error);
+        setIsLoading(false);
       })
     }
-    
   }, [])
 
   return (
@@ -157,7 +162,7 @@ const BlogAdd = () => {
                 </div>
               </div>
             </div>
-            <button className="btn btn-primary mt-4">Save</button>
+            <button className="btn btn-primary mt-4" disabled={isLoading ? true : false}>Save</button>
             <Link className="btn btn-secondary mt-4" to={"/my-account"} style={{marginLeft: "10px"}} >Cancel</Link>
           </form>
         </div>
